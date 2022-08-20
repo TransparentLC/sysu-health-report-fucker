@@ -1,0 +1,2 @@
+ddddocr == 1.*
+selenium == 4.*
