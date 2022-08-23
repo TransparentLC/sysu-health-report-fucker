@@ -10,18 +10,21 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 __import__('onnxruntime').set_default_logger_severity(3)
 
-with open(os.path.join(os.path.split(__file__)[0], 'secrets.txt'), 'r', encoding='utf-8') as f:
+with open(os.path.join(os.path.dirname(__file__), 'secrets.txt'), 'r', encoding='utf-8') as f:
     USERNAME, PASSWORD = (x.strip() for x in f.read().splitlines())
 
 def getTime() -> str:
     return time.strftime('[%Y-%m-%d %H:%M:%S]')
 
-ocr = ddddocr.DdddOcr()
+if 'show_ad' in ddddocr.DdddOcr.__init__.__code__.co_varnames:
+    ocr = ddddocr.DdddOcr(show_ad=False)
+else:
+    ocr = ddddocr.DdddOcr()
 
 options = webdriver.FirefoxOptions()
 options.headless = True
 browser = webdriver.Firefox(options=options)
-browser.install_addon(os.path.join(os.path.split(__file__)[0], 'webdriver-cleaner'), temporary=True)
+browser.install_addon(os.path.join(os.path.dirname(__file__), 'webdriver-cleaner'), temporary=True)
 
 try:
     browser.get('https://cas.sysu.edu.cn/cas/login?service=http%3A%2F%2Fjksb.sysu.edu.cn%2Finfoplus%2Fform%2FXNYQSB%2Fstart')
@@ -50,8 +53,8 @@ try:
     print(getTime(), 'Result:', browser.find_element(By.CSS_SELECTOR, '.overlay.active > .dialog.display .dialog_content').text)
 except Exception as ex:
     print(getTime(), type(ex).__name__, str(ex))
-    screenshotPath = os.path.join(os.path.split(__file__)[0], 'screenshot', secrets.token_urlsafe(12) + '.png')
-    os.makedirs(os.path.split(screenshotPath)[0], exist_ok=True)
+    screenshotPath = os.path.join(os.path.dirname(__file__), 'screenshot', secrets.token_urlsafe(12) + '.png')
+    os.makedirs(os.path.dirname(screenshotPath), exist_ok=True)
     browser.save_screenshot(screenshotPath)
     print(getTime(), 'Screenshot saved:', screenshotPath)
 finally:
