@@ -1,8 +1,8 @@
 import ddddocr
 import time
 import os
-import sys
 import secrets
+import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
@@ -51,11 +51,12 @@ try:
     browser.find_element(By.CSS_SELECTOR, '#form_command_bar > .command_button > .command_button_content:first-child').click()
     WebDriverWait(browser, 15).until(expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, '.overlay.active > .dialog.display .dialog_content')))
     print(getTime(), 'Result:', browser.find_element(By.CSS_SELECTOR, '.overlay.active > .dialog.display .dialog_content').text)
+    browser.quit()
 except Exception as ex:
     print(getTime(), type(ex).__name__, str(ex))
     screenshotPath = os.path.join(os.path.dirname(__file__), 'screenshot', secrets.token_urlsafe(12) + '.png')
     os.makedirs(os.path.dirname(screenshotPath), exist_ok=True)
     browser.save_screenshot(screenshotPath)
     print(getTime(), 'Screenshot saved:', screenshotPath)
-finally:
     browser.quit()
+    sys.exit(1)
