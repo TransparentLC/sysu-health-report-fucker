@@ -50,7 +50,13 @@ try:
     WebDriverWait(browser, 15).until(expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, '#form_command_bar > .command_button > .command_button_content:first-child')))
     browser.find_element(By.CSS_SELECTOR, '#form_command_bar > .command_button > .command_button_content:first-child').click()
     WebDriverWait(browser, 15).until(expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, '.overlay.active > .dialog.display .dialog_content')))
-    print(getTime(), 'Result:', browser.find_element(By.CSS_SELECTOR, '.overlay.active > .dialog.display .dialog_content').text)
+    resultText = browser.find_element(By.CSS_SELECTOR, '.overlay.active > .dialog.display .dialog_content').text
+    if resultText not in {
+        'Done successfully!',
+        '办理成功!',
+    }:
+        raise Exception(f'Result: {resultText}')
+    print(getTime(), 'Health report success!')
     browser.quit()
 except Exception as ex:
     print(getTime(), type(ex).__name__, str(ex))
