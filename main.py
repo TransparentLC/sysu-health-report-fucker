@@ -44,7 +44,7 @@ try:
     print(getTime(), f'Login success!')
 
     WebDriverWait(browser, 15).until(expected_conditions.visibility_of_element_located((By.ID, 'title_description_short')))
-    print(getTime(), 'Form ID:', browser.find_element(By.ID, 'title_description').text.removeprefix('流水号:').removeprefix('SN:'))
+    print(getTime(), 'Form ID:', browser.find_element(By.ID, 'title_description_short').text.removeprefix('流水号:').removeprefix('SN:'))
     WebDriverWait(browser, 15).until(expected_conditions.text_to_be_present_in_element((By.ID, 'title_content'), '学生健康状况申报:温馨提示'))
     WebDriverWait(browser, 15).until(expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, '#form_command_bar > .command_button > .command_button_content:first-child')))
     browser.find_element(By.CSS_SELECTOR, '#form_command_bar > .command_button > .command_button_content:first-child').click()
