@@ -4,6 +4,7 @@ import os
 import secrets
 import sys
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
@@ -25,6 +26,7 @@ options = webdriver.FirefoxOptions()
 options.headless = True
 browser = webdriver.Firefox(options=options)
 browser.install_addon(os.path.join(os.path.dirname(__file__), 'webdriver-cleaner'), temporary=True)
+browser.install_addon(os.path.join(os.path.dirname(__file__), 'request-blocker'), temporary=True)
 
 try:
     browser.get('https://cas.sysu.edu.cn/cas/login?service=http%3A%2F%2Fjksb.sysu.edu.cn%2Finfoplus%2Fform%2FXNYQSB%2Fstart')
@@ -41,13 +43,18 @@ try:
         browser.find_element(By.CSS_SELECTOR, 'input[type=submit]').click()
     print(getTime(), f'Login success!')
 
-    WebDriverWait(browser, 15).until(expected_conditions.visibility_of_element_located((By.ID, 'title_description')))
+    WebDriverWait(browser, 15).until(expected_conditions.visibility_of_element_located((By.ID, 'title_description_short')))
     print(getTime(), 'Form ID:', browser.find_element(By.ID, 'title_description').text.removeprefix('流水号:').removeprefix('SN:'))
     WebDriverWait(browser, 15).until(expected_conditions.text_to_be_present_in_element((By.ID, 'title_content'), '学生健康状况申报:温馨提示'))
     WebDriverWait(browser, 15).until(expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, '#form_command_bar > .command_button > .command_button_content:first-child')))
     browser.find_element(By.CSS_SELECTOR, '#form_command_bar > .command_button > .command_button_content:first-child').click()
     WebDriverWait(browser, 15).until(expected_conditions.text_to_be_present_in_element((By.ID, 'title_content'), '学生健康状况申报:健康信息'))
     WebDriverWait(browser, 15).until(expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, '#form_command_bar > .command_button > .command_button_content:first-child')))
+    try:
+        if not browser.find_element(By.CSS_SELECTOR, 'input[name="fieldSQgzszx"]').is_selected():
+            browser.find_element(By.CSS_SELECTOR, 'input[name="fieldSQgzszx"]').click()
+    except NoSuchElementException:
+        pass
     browser.find_element(By.CSS_SELECTOR, '#form_command_bar > .command_button > .command_button_content:first-child').click()
     WebDriverWait(browser, 15).until(expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, '.overlay.active > .dialog.display .dialog_content')))
     resultText = browser.find_element(By.CSS_SELECTOR, '.overlay.active > .dialog.display .dialog_content').text
