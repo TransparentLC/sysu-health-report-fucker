@@ -11,7 +11,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 __import__('onnxruntime').set_default_logger_severity(3)
 
-with open(os.path.join(os.path.dirname(__file__), 'secrets.txt'), 'r', encoding='utf-8') as f:
+if len(sys.argv) < 2:
+    print('Secret file is required!')
+    sys.exit(1)
+
+with open(os.path.join(sys.argv[1]), 'r', encoding='utf-8') as f:
     USERNAME, PASSWORD = (x.strip() for x in f.read().splitlines())
 
 def getTime() -> str:
