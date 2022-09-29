@@ -155,3 +155,5 @@ screenshot/
 geckodriver.log
 output.log
 secrets.txt
+secrets.*.txt
+!secrets.example.txt
